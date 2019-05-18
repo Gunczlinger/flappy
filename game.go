@@ -21,16 +21,26 @@ import (
 )
 
 const (
+/*
+Modified physical constants:
+-jump velocity (jumps higher) *ended up unbalancing the game--DEPRECATED*
+-flap velocity (twice yhe airtime)
+-game speed (starts faster, accelerates faster)
+-climbing grace (less likely to trip over minor height change)
+
+*Iportant to note that it appears 'y' is reversed--will try to modify touch sensitivity based on this assumption*
+*/
+
 	tileWidth, tileHeight = 16, 16 // width and height of each tile
 	tilesX, tilesY        = 16, 16 // number of horizontal tiles
 
 	gopherTile = 1 // which tile the gopher is standing on (0-indexed)
 
-	initScrollV = 1     // initial scroll velocity
-	scrollA     = 0.001 // scroll accelleration
+	initScrollV = 1.05     // initial scroll velocity
+	scrollA     = 0.0015 // scroll acceleration
 	gravity     = 0.1   // gravity
 	jumpV       = -5    // jump velocity
-	flapV       = -1.5  // flap velocity
+	flapV       = -3  // flap velocity
 
 	deadScrollA         = -0.01 // scroll deceleration after the gopher dies
 	deadTimeBeforeReset = 240   // how long to wait before restarting the game
@@ -41,7 +51,7 @@ const (
 	groundMax        = tileHeight * tilesY
 	initGroundY      = tileHeight * (tilesY - 1)
 
-	climbGrace = tileHeight / 3 // gopher won't die if it hits a cliff this high
+	climbGrace = (tileHeight / 3)+2 // gopher won't die if it hits a cliff this high
 )
 
 type Game struct {
@@ -323,7 +333,7 @@ func (g *Game) nextGroundY() float32 {
 }
 
 func (g *Game) gopherCrashed() bool {
-	return g.gopher.y+tileHeight-climbGrace > g.groundY[gopherTile+1]
+	return g.gopher.y+tileHeight-(climbGrace+1) > g.groundY[gopherTile+1] //may have successfully given a little grace to gophers who catch the cliff-edge
 }
 
 func (g *Game) killGopher() {
