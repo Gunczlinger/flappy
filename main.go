@@ -29,7 +29,7 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	app.Main(func(a app.App) {
-		var glctx gl.Context
+		var glctx gl.Context //context carries deadlines, cancelation signals, and other request-scoped values across API boundaries and between processes
 		var sz size.Event
 		for e := range a.Events() {
 			switch e := a.Filter(e).(type) {
