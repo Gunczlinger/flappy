@@ -29,7 +29,7 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	app.Main(func(a app.App) {
-		var glctx gl.Context //context carries deadlines, cancelation signals, and other request-scoped values across API boundaries and between processes
+		var glctx gl.Context //context "carries deadlines, cancelation signals, and other request-scoped values across API boundaries and between processes" (https://golang.org/pkg/context/)
 		var sz size.Event
 		for e := range a.Events() {
 			switch e := a.Filter(e).(type) {
@@ -95,4 +95,6 @@ func onPaint(glctx gl.Context, sz size.Event) {
 	now := clock.Time(time.Since(startTime) * 60 / time.Second)
 	game.Update(now)
 	eng.Render(scene, now, sz)
+	game.Render(sz, glctx, images) // Added
+	//game.Open(sz, glctx, images) // Added
 }
